@@ -10,9 +10,9 @@ const Settings = lazy(() => import('@/pages/Settings'));
 
 function AppRoutes() {
   return (
-    <Suspense fallback={null}>
+    <Suspense fallback={<div className="text-center text-white">Loading...</div>}>
       <Routes>
-        <Route element={<MainLayout />}> 
+        <Route element={<MainLayout />}>
           <Route path="/" element={<Navigate to="/dashboard" replace />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/apis" element={<Apis />} />

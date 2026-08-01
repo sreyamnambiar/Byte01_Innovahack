@@ -43,12 +43,11 @@ if config.config_file_name is not None:
 # ---------------------------------------------------------------------------
 # Model metadata for autogenerate support
 # ---------------------------------------------------------------------------
-# Import all models here so their tables are registered in metadata.
-# As models are added in future modules, import them below:
-#
-# from app.models.user import User
-# from app.models.policy import Policy
-# from app.models.audit_log import AuditLog
+# Import ALL models here so SQLAlchemy registers their tables in Base.metadata.
+# Alembic autogenerate inspects Base.metadata to detect schema changes.
+# Every new model added to app/models/ MUST appear in this import block.
+
+import app.models  # noqa: F401 — registers all models via app/models/__init__.py
 
 target_metadata = Base.metadata
 

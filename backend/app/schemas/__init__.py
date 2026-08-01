@@ -1,11 +1,58 @@
 """
-DarkTrust – Schemas module.
+DarkTrust – Schemas package barrel export.
 
-This module will contain all Pydantic v2 request/response schemas, including:
-  - UserSchemas:    Create, read, update user data contracts
-  - TokenSchemas:   JWT token request/response shapes
-  - PolicySchemas:  Access control policy definitions
-  - ErrorSchemas:   Standardized error response format
+Import from here for a clean, single-source import path.
 
-No schemas are implemented at this foundation stage.
+Usage:
+    from app.schemas import UserCreate, UserResponse, PolicyCreate
 """
+
+from app.schemas.common import (
+    DarkTrustBaseModel,
+    ORMBaseModel,
+    PaginatedResponse,
+    TimestampSchema,
+)
+from app.schemas.user import UserBase, UserCreate, UserResponse, UserSummary
+from app.schemas.role import RoleBase, RoleCreate, RoleResponse
+from app.schemas.permission import PermissionBase, PermissionCreate, PermissionResponse
+from app.schemas.policy import PolicyBase, PolicyCreate, PolicyResponse
+from app.schemas.trust_context import (
+    TrustContextBase,
+    TrustContextCreate,
+    TrustContextResponse,
+)
+from app.schemas.audit_log import AuditLogBase, AuditLogCreate, AuditLogResponse
+
+__all__ = [
+    # Common
+    "DarkTrustBaseModel",
+    "ORMBaseModel",
+    "PaginatedResponse",
+    "TimestampSchema",
+    # User
+    "UserBase",
+    "UserCreate",
+    "UserResponse",
+    "UserSummary",
+    # Role
+    "RoleBase",
+    "RoleCreate",
+    "RoleResponse",
+    # Permission
+    "PermissionBase",
+    "PermissionCreate",
+    "PermissionResponse",
+    # Policy
+    "PolicyBase",
+    "PolicyCreate",
+    "PolicyResponse",
+    # TrustContext
+    "TrustContextBase",
+    "TrustContextCreate",
+    "TrustContextResponse",
+    # AuditLog
+    "AuditLogBase",
+    "AuditLogCreate",
+    "AuditLogResponse",
+]

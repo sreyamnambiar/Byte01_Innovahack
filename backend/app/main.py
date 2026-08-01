@@ -31,6 +31,9 @@ from app.security.exceptions import (
     HighRiskException,
     RiskChallengeException
 )
+from app.gateway.gateway import GatewayMiddleware
+from fastapi.exceptions import RequestValidationError
+from starlette.exceptions import HTTPException as StarletteHTTPException
 
 # ---------------------------------------------------------------------------
 # Module logger
@@ -105,14 +108,16 @@ def create_application() -> FastAPI:
         FastAPI: Fully configured application instance.
     """
     application = FastAPI(
-        title=settings.APP_NAME,
-        version=settings.APP_VERSION,
-        description=settings.APP_DESCRIPTION,
+        title="DarkTrust Zero Trust Security Platform",
+        description="""
+        Enterprise API Gateway and Backend orchestrating Zero Trust Architecture, 
+        Adaptive Risk Engines, and strict RBAC controls.
+        """,
+        version="1.0.0",
+        openapi_url=f"{settings.API_V1_STR}/openapi.json",
+        docs_url="/docs",
+        redoc_url="/redoc",
         lifespan=lifespan,
-        # ── Swagger / OpenAPI ────────────────────────────────────────────
-        docs_url="/docs" if not settings.is_production else None,
-        redoc_url="/redoc" if not settings.is_production else None,
-        openapi_url="/openapi.json" if not settings.is_production else None,
         # ── OpenAPI Metadata ─────────────────────────────────────────────
         contact={
             "name": "DarkTrust Security Team",

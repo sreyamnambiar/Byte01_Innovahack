@@ -10,6 +10,8 @@ from fastapi import APIRouter
 from app.api.v1.auth import router as auth_router
 from app.api.v1.users import router as users_router
 from app.api.v1.audit import router as audit_router
+from app.gateway.router import router as gateway_router
+from app.api.v1.simulator import router as simulator_router
 
 # ---------------------------------------------------------------------------
 # v1 Root Router
@@ -81,5 +83,6 @@ async def readiness_check() -> dict:
 router.include_router(auth_router, prefix="/auth", tags=["Authentication"])
 router.include_router(users_router, prefix="/users", tags=["Users"])
 router.include_router(audit_router, prefix="/audit", tags=["Audit Logs"])
+router.include_router(simulator_router, tags=["Attack Simulator (Educational)"])
+router.include_router(gateway_router, tags=["API Gateway"])
 # router.include_router(policies.router, prefix="/policies", tags=["Policy Engine"])
-# router.include_router(gateway.router,  prefix="/gateway",  tags=["API Gateway"])

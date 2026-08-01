@@ -16,6 +16,9 @@ from app.repositories.user_repository import UserRepository
 from app.schemas.role import RoleCreate
 from app.services.exceptions import ResourceNotFoundException, ResourceAlreadyExistsException, ValidationException
 from sqlalchemy.exc import IntegrityError
+from app.security.audit_logger import AuditLogger
+from app.security.security_events import AuthorizationEvent
+from app.models.audit_log import AuditEventType
 
 
 class RoleService:
@@ -57,7 +60,19 @@ class RoleService:
             raise ValidationException("Cannot assign an inactive role.")
 
         try:
-            return await self.role_repo.assign_to_user(user_id=user_id, role_id=role_id, assigned_by=assigned_by)
+            assignment = await self.role_repo.assign_to_user(user_id=user_id, role_id=role_id, assigned_by=assigned_by)
+            await AuditLogger.log_authorization_event(
+                self.role_repo.session,
+                AuditEventType.ROLE_ASSIGNED,
+                AuthorizationEvent(
+                    user_id=assigned_by,
+                    action="assign_role",
+                    resource="user_role",
+                    resource_id=str(user_id),
+                    new_values={"role_id": str(role_id), "user_id": str(user_id)}
+                )
+            )
+            return assignment
         except IntegrityError:
             raise ResourceAlreadyExistsException("Role is already assigned to this user.")
 
@@ -68,6 +83,18 @@ class RoleService:
         removed = await self.role_repo.revoke_from_user(user_id, role_id)
         if not removed:
             raise ResourceNotFoundException("Role assignment does not exist for this user.")
+            
+        await AuditLogger.log_authorization_event(
+            self.role_repo.session,
+            AuditEventType.ROLE_REVOKED,
+            AuthorizationEvent(
+                user_id=None,  # We don't have assigned_by here, could be passed
+                action="revoke_role",
+                resource="user_role",
+                resource_id=str(user_id),
+                old_values={"role_id": str(role_id), "user_id": str(user_id)}
+            )
+        )
 
     async def list_user_roles(self, user_id: UUID) -> Sequence[Role]:
         """

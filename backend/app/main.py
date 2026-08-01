@@ -26,6 +26,11 @@ from app.services.exceptions import (
     ResourceAlreadyExistsException,
     ValidationException,
 )
+from app.security.exceptions import (
+    ZeroTrustViolationException,
+    HighRiskException,
+    RiskChallengeException
+)
 
 # ---------------------------------------------------------------------------
 # Module logger
@@ -195,6 +200,22 @@ def create_application() -> FastAPI:
     @application.exception_handler(ValidationException)
     async def validation_exception_handler(request: Request, exc: ValidationException):
         return JSONResponse(status_code=400, content={"detail": exc.message})
+
+    @application.exception_handler(ZeroTrustViolationException)
+    async def zero_trust_exception_handler(request: Request, exc: ZeroTrustViolationException):
+        return JSONResponse(status_code=403, content={"detail": exc.detail})
+
+    @application.exception_handler(HighRiskException)
+    async def high_risk_exception_handler(request: Request, exc: HighRiskException):
+        return JSONResponse(status_code=403, content={"detail": exc.detail})
+
+    @application.exception_handler(RiskChallengeException)
+    async def risk_challenge_exception_handler(request: Request, exc: RiskChallengeException):
+        return JSONResponse(
+            status_code=401, 
+            content={"detail": exc.detail},
+            headers=exc.headers
+        )
 
     return application
 

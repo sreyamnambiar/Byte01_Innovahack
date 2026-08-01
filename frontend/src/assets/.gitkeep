@@ -1,0 +1,9 @@
+# assets directory
+# Place static assets here: images, icons, fonts, videos.
+#
+# Recommended structure:
+#   assets/
+#     images/       – Raster images (PNG, JPG, WebP)
+#     icons/        – SVG icons and icon sets
+#     fonts/        – Self-hosted web fonts (if not using Google Fonts)
+#     animations/   – Lottie JSON animation files

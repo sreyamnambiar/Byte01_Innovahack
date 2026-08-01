@@ -1,0 +1,8 @@
+# public directory
+# Files placed here are served at the root URL path.
+#
+# Place here:
+#   favicon.svg       – Browser tab icon
+#   og-image.png      – Open Graph social share image
+#   robots.txt        – Search engine crawl instructions
+#   manifest.json     – PWA manifest (if adding PWA support)

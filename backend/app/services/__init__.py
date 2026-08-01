@@ -1,12 +1,29 @@
 """
 DarkTrust – Services module.
 
-This module will contain the business logic service layer, including:
-  - UserService:    User lifecycle management
-  - PolicyService:  Access policy CRUD and evaluation
-  - AuditService:   Security event recording and retrieval
-  - AlertService:   Threat alert generation and dispatch
-
-Services are stateless and accept a database session via dependency injection.
-No services are implemented at this foundation stage.
+This module contains the business logic service layer.
+Services are stateless and accept repositories via dependency injection.
 """
+
+from app.services.exceptions import (
+    DarkTrustException,
+    ResourceNotFoundException,
+    ResourceAlreadyExistsException,
+    ValidationException,
+)
+from app.services.user_service import UserService
+from app.services.role_service import RoleService
+from app.services.permission_service import PermissionService
+
+__all__ = [
+    # Exceptions
+    "DarkTrustException",
+    "ResourceNotFoundException",
+    "ResourceAlreadyExistsException",
+    "ValidationException",
+    
+    # Services
+    "UserService",
+    "RoleService",
+    "PermissionService",
+]

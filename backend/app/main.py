@@ -14,13 +14,18 @@ It wires together:
 from contextlib import asynccontextmanager
 from typing import AsyncGenerator
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from app.api.v1.router import router as v1_router
 from app.core.config import settings
 from app.core.logging import get_logger, setup_logging
+from app.services.exceptions import (
+    ResourceNotFoundException,
+    ResourceAlreadyExistsException,
+    ValidationException,
+)
 
 # ---------------------------------------------------------------------------
 # Module logger
@@ -178,6 +183,18 @@ def create_application() -> FastAPI:
                 "message": "An unexpected error occurred. Please contact support.",
             },
         )
+
+    @application.exception_handler(ResourceNotFoundException)
+    async def resource_not_found_handler(request: Request, exc: ResourceNotFoundException):
+        return JSONResponse(status_code=404, content={"detail": exc.message})
+
+    @application.exception_handler(ResourceAlreadyExistsException)
+    async def resource_exists_handler(request: Request, exc: ResourceAlreadyExistsException):
+        return JSONResponse(status_code=409, content={"detail": exc.message})
+
+    @application.exception_handler(ValidationException)
+    async def validation_exception_handler(request: Request, exc: ValidationException):
+        return JSONResponse(status_code=400, content={"detail": exc.message})
 
     return application
 

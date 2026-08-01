@@ -23,6 +23,7 @@ from app.schemas.trust_context import (
     TrustContextResponse,
 )
 from app.schemas.audit_log import AuditLogBase, AuditLogCreate, AuditLogResponse
+from app.schemas.token import Token, RefreshTokenRequest
 
 __all__ = [
     # Common
@@ -55,4 +56,7 @@ __all__ = [
     "AuditLogBase",
     "AuditLogCreate",
     "AuditLogResponse",
+    # Token
+    "Token",
+    "RefreshTokenRequest",
 ]

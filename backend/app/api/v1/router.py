@@ -7,6 +7,7 @@ Future modules (auth, policies, gateway, audit) register sub-routers here.
 """
 
 from fastapi import APIRouter
+from app.api.v1.auth import router as auth_router
 
 # ---------------------------------------------------------------------------
 # v1 Root Router
@@ -74,10 +75,8 @@ async def readiness_check() -> dict:
 # ---------------------------------------------------------------------------
 # Future Module Router Registration
 # ---------------------------------------------------------------------------
-# Uncomment and import as each module is developed:
-#
-# from app.api.v1.endpoints import auth, users, policies, gateway, audit
-# router.include_router(auth.router,     prefix="/auth",     tags=["Authentication"])
+# Register modular routers here
+router.include_router(auth_router, prefix="/auth", tags=["Authentication"])
 # router.include_router(users.router,    prefix="/users",    tags=["Users"])
 # router.include_router(policies.router, prefix="/policies", tags=["Policy Engine"])
 # router.include_router(gateway.router,  prefix="/gateway",  tags=["API Gateway"])

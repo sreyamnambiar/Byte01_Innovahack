@@ -38,7 +38,6 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess }) {
         onAuthSuccess(data.user, data.access_token);
         onClose();
       } else {
-        // Auto login after register
         const loginRes = await fetch('/api/auth/login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -74,9 +73,11 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess }) {
         </button>
 
         <div style={{ textAlign: 'center', marginBottom: '24px' }}>
-          <div style={{ display: 'inline-flex', padding: '10px', background: 'rgba(0, 240, 255, 0.1)', borderRadius: '12px', color: 'var(--primary-cyan)', marginBottom: '10px' }}>
-            <ShieldCheck size={32} />
-          </div>
+          <img 
+            src="/logo.png" 
+            alt="DarkTrust Logo" 
+            style={{ width: '56px', height: '56px', borderRadius: '12px', objectFit: 'cover', border: '1px solid var(--border-accent)', marginBottom: '8px' }} 
+          />
           <h3 style={{ fontSize: '1.3rem', fontWeight: '800', color: 'var(--text-main)' }}>
             {isLogin ? 'Sign In to DarkTrust' : 'Create DarkTrust Account'}
           </h3>
@@ -167,7 +168,6 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess }) {
                 <option value="admin">Security Admin (Full Access)</option>
                 <option value="edge-gateway">edge-gateway</option>
                 <option value="user-service">user-service</option>
-                <option value="analytics-service">analytics-service</option>
               </select>
             </div>
           )}

@@ -94,11 +94,13 @@ export default function App() {
         
         {/* Logo & Title */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '14px', cursor: 'pointer' }} onClick={() => setView('landing')}>
-          <img 
-            src="/logo.png" 
-            alt="DarkTrust Logo" 
-            style={{ width: '42px', height: '42px', borderRadius: '8px', objectFit: 'cover', border: '1px solid var(--border-accent)' }} 
-          />
+          <div style={{ background: '#ffffff', padding: '4px', borderRadius: '10px', boxShadow: '0 0 14px var(--primary-glow)', border: '1px solid var(--primary-cyan)', display: 'inline-flex' }}>
+            <img 
+              src="/logo.png" 
+              alt="DarkTrust Logo" 
+              style={{ width: '38px', height: '38px', objectFit: 'contain' }} 
+            />
+          </div>
           <div>
             <h1 style={{ fontSize: '1.3rem', fontWeight: '800', letterSpacing: '-0.02em', color: 'var(--text-main)' }}>
               Dark<span style={{ color: 'var(--primary-cyan)' }}>Trust</span> Security

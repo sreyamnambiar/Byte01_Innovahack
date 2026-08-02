@@ -1,4 +1,4 @@
-# 🛡️ DarkTrust – Zero Trust Access Control for Decentralized API
+# 🛡️ DarkTrust – Zero Trust Access Control for Decentralized APIs
 
 Developed for the **InnovaHack Hackathon** (`Byte01_Innovahack`).
 

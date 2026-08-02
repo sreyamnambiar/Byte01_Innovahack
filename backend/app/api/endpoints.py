@@ -1,7 +1,7 @@
 import hashlib
 import json
 from typing import Dict, Any, List, Optional
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, HTTPException, Query, Header
 from pydantic import BaseModel
 
 from app.core.crypto import crypto_engine
@@ -11,6 +11,16 @@ from app.core.simulator import attack_simulator
 from app.core.audit_logger import audit_logger
 
 router = APIRouter()
+
+class RegisterRequest(BaseModel):
+    email: str
+    password: str
+    name: str
+    role: str = "guest"
+
+class LoginRequest(BaseModel):
+    email: str
+    password: str
 
 class TokenRequest(BaseModel):
     caller_service: str
@@ -35,6 +45,30 @@ class PolicyUpdateRequest(BaseModel):
 class AttackSimRequest(BaseModel):
     scenario: str
 
+@router.post("/auth/register")
+def register_user(req: RegisterRequest):
+    success, msg, user = crypto_engine.register_user(req.email, req.password, req.name, req.role)
+    if not success:
+        raise HTTPException(status_code=400, detail=msg)
+    return {"message": msg, "user": user}
+
+@router.post("/auth/login")
+def login_user(req: LoginRequest):
+    success, msg, token, user = crypto_engine.authenticate_user(req.email, req.password)
+    if not success:
+        raise HTTPException(status_code=401, detail=msg)
+    return {"message": msg, "access_token": token, "token_type": "bearer", "user": user}
+
+@router.get("/auth/me")
+def get_current_user(authorization: Optional[str] = Header(None)):
+    if not authorization or not authorization.startswith("Bearer "):
+        raise HTTPException(status_code=401, detail="Missing or invalid authorization header")
+    token = authorization.split(" ")[1]
+    valid, reason, claims = crypto_engine.verify_service_token(token, "*")
+    if not valid:
+        raise HTTPException(status_code=401, detail=reason)
+    return {"claims": claims, "status": "authenticated"}
+
 @router.post("/auth/token")
 def issue_service_token(req: TokenRequest):
     payload_hash = hashlib.sha256(json.dumps(req.payload or {}).encode()).hexdigest()[:16]
@@ -43,7 +77,7 @@ def issue_service_token(req: TokenRequest):
         "token": token,
         "caller_service": req.caller_service,
         "target_service": req.target_service,
-        "expires_in_seconds": 30
+        "expires_in_seconds": 3600
     }
 
 @router.post("/proxy/evaluate")

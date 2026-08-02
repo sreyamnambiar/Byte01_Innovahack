@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Send, Zap, Key, ShieldCheck, ShieldAlert } from 'lucide-react';
+import { Send, Zap, Key } from 'lucide-react';
 
 export default function ProxyTester({ onTestComplete }) {
   const [caller, setCaller] = useState('user-service');
@@ -30,7 +30,6 @@ export default function ProxyTester({ onTestComplete }) {
   const handleEvaluate = async () => {
     setLoading(true);
     try {
-      // If no token generated yet, auto generate one
       let currentToken = token;
       if (!currentToken) {
         const tokenRes = await fetch('/api/auth/token', {
@@ -82,9 +81,12 @@ export default function ProxyTester({ onTestComplete }) {
         <div>
           <label style={{ fontSize: '0.8rem', color: 'var(--text-muted)', display: 'block', marginBottom: '6px' }}>Caller Microservice</label>
           <select 
-            style={{ width: '100%', padding: '10px', background: '#05070a', border: '1px solid var(--border-color)', color: 'var(--text-main)', borderRadius: '6px' }}
+            style={{ width: '100%', padding: '10px', background: 'var(--input-bg)', border: '1px solid var(--input-border)', color: 'var(--text-main)', borderRadius: '6px', fontSize: '0.85rem' }}
             value={caller} 
-            onChange={e => setCaller(e.target.value)}
+            onChange={e => {
+              setCaller(e.target.value);
+              setRole(e.target.value);
+            }}
           >
             <option value="edge-gateway">edge-gateway</option>
             <option value="auth-service">auth-service</option>
@@ -97,7 +99,7 @@ export default function ProxyTester({ onTestComplete }) {
         <div>
           <label style={{ fontSize: '0.8rem', color: 'var(--text-muted)', display: 'block', marginBottom: '6px' }}>Target Microservice</label>
           <select 
-            style={{ width: '100%', padding: '10px', background: '#05070a', border: '1px solid var(--border-color)', color: 'var(--text-main)', borderRadius: '6px' }}
+            style={{ width: '100%', padding: '10px', background: 'var(--input-bg)', border: '1px solid var(--input-border)', color: 'var(--text-main)', borderRadius: '6px', fontSize: '0.85rem' }}
             value={target} 
             onChange={e => setTarget(e.target.value)}
           >
@@ -111,7 +113,7 @@ export default function ProxyTester({ onTestComplete }) {
         <div>
           <label style={{ fontSize: '0.8rem', color: 'var(--text-muted)', display: 'block', marginBottom: '6px' }}>Geolocation Region</label>
           <select 
-            style={{ width: '100%', padding: '10px', background: '#05070a', border: '1px solid var(--border-color)', color: 'var(--text-main)', borderRadius: '6px' }}
+            style={{ width: '100%', padding: '10px', background: 'var(--input-bg)', border: '1px solid var(--input-border)', color: 'var(--text-main)', borderRadius: '6px', fontSize: '0.85rem' }}
             value={geo} 
             onChange={e => setGeo(e.target.value)}
           >
@@ -127,7 +129,7 @@ export default function ProxyTester({ onTestComplete }) {
           <label style={{ fontSize: '0.8rem', color: 'var(--text-muted)', display: 'block', marginBottom: '6px' }}>Payload Size (KB)</label>
           <input 
             type="number" 
-            style={{ width: '100%', padding: '10px', background: '#05070a', border: '1px solid var(--border-color)', color: 'var(--text-main)', borderRadius: '6px' }}
+            style={{ width: '100%', padding: '10px', background: 'var(--input-bg)', border: '1px solid var(--input-border)', color: 'var(--text-main)', borderRadius: '6px', fontSize: '0.85rem' }}
             value={payloadSize} 
             onChange={e => setPayloadSize(e.target.value)} 
           />
@@ -145,22 +147,22 @@ export default function ProxyTester({ onTestComplete }) {
       </div>
 
       {token && (
-        <div style={{ fontSize: '0.75rem', fontFamily: 'monospace', color: 'var(--primary-cyan)', background: '#05070a', padding: '8px 12px', borderRadius: '6px', marginBottom: '16px', overflowX: 'auto' }}>
+        <div style={{ fontSize: '0.75rem', fontFamily: 'monospace', color: 'var(--primary-cyan)', background: 'var(--input-bg)', border: '1px solid var(--input-border)', padding: '8px 12px', borderRadius: '6px', marginBottom: '16px', overflowX: 'auto' }}>
           Token: {token}
         </div>
       )}
 
       {evalResult && (
-        <div className="glass-panel" style={{ padding: '16px', background: evalResult.allowed ? 'rgba(16, 185, 129, 0.08)' : 'rgba(239, 68, 68, 0.08)' }}>
+        <div className="glass-panel" style={{ padding: '16px', background: evalResult.allowed ? 'rgba(16, 185, 129, 0.08)' : 'rgba(239, 68, 68, 0.08)', border: evalResult.allowed ? '1px solid rgba(16, 185, 129, 0.3)' : '1px solid rgba(239, 68, 68, 0.3)' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <span style={{ fontWeight: '700', color: evalResult.allowed ? '#10b981' : '#ef4444' }}>
+            <span style={{ fontWeight: '700', color: evalResult.allowed ? 'var(--status-success)' : 'var(--status-danger)' }}>
               {evalResult.allowed ? '✅ PERMITTED BY PROXY' : '❌ BLOCKED BY PROXY'} - Risk: {evalResult.metrics.risk_score}/100
             </span>
             <span className="font-mono" style={{ color: 'var(--primary-cyan)', fontWeight: '700' }}>
               Overhead: {evalResult.metrics.proxy_latency_ms} ms
             </span>
           </div>
-          <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginTop: '6px' }}>
+          <p style={{ fontSize: '0.85rem', color: 'var(--text-main)', marginTop: '6px' }}>
             {evalResult.reason}
           </p>
         </div>

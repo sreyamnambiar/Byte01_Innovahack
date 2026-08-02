@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Sliders, Globe, Shield, HardDrive, Check, Save } from 'lucide-react';
+import { Sliders, Globe, Shield, HardDrive, Check, Save, Lock, Users } from 'lucide-react';
 
 export default function PolicyManager() {
   const [policies, setPolicies] = useState({
@@ -7,14 +7,23 @@ export default function PolicyManager() {
     max_payload_kb: 50.0,
     blocked_ips: ['192.168.1.99', '10.0.0.66'],
     time_restriction_enabled: false,
-    rbac_matrix: {}
+    rbac_matrix: {
+      "admin": ["*"],
+      "edge-gateway": ["auth-service", "user-service", "analytics-service"],
+      "auth-service": ["user-service"],
+      "user-service": ["database-api"],
+      "analytics-service": ["database-api"],
+      "guest": ["public-info"]
+    }
   });
   const [saved, setSaved] = useState(false);
 
   useEffect(() => {
     fetch('/api/policies')
       .then(res => res.json())
-      .then(data => setPolicies(data))
+      .then(data => {
+        if (data) setPolicies(data);
+      })
       .catch(err => console.error(err));
   }, []);
 
@@ -26,7 +35,8 @@ export default function PolicyManager() {
         body: JSON.stringify({
           allowed_geos: policies.allowed_geos,
           max_payload_kb: parseFloat(policies.max_payload_kb),
-          blocked_ips: policies.blocked_ips
+          blocked_ips: policies.blocked_ips,
+          rbac_matrix: policies.rbac_matrix
         })
       });
       if (res.ok) {
@@ -38,6 +48,17 @@ export default function PolicyManager() {
     }
   };
 
+  const handleRbacChange = (role, newTargetsString) => {
+    const targets = newTargetsString.split(',').map(s => s.trim()).filter(Boolean);
+    setPolicies(prev => ({
+      ...prev,
+      rbac_matrix: {
+        ...prev.rbac_matrix,
+        [role]: targets
+      }
+    }));
+  };
+
   return (
     <div className="glass-panel" style={{ padding: '24px', marginBottom: '24px' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
@@ -46,7 +67,7 @@ export default function PolicyManager() {
             <Sliders size={22} color="var(--primary-cyan)" /> 🛡️ Contextual Zero-Trust Policy Engine
           </h3>
           <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginTop: '4px' }}>
-            Configure active zero-trust contextual evaluation rules (Time, Geolocation, Payload limits, IP Blacklists).
+            Configure active zero-trust contextual evaluation rules (Time, Geolocation, Payload limits, IP Blacklists, RBAC Matrix).
           </p>
         </div>
 
@@ -55,10 +76,11 @@ export default function PolicyManager() {
         </button>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px' }}>
+      {/* CONTEXTUAL POLICIES GRID */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px', marginBottom: '24px' }}>
         
         {/* Geo-Fencing Rule */}
-        <div className="glass-panel" style={{ padding: '18px', background: 'rgba(15, 23, 42, 0.5)' }}>
+        <div className="glass-panel" style={{ padding: '18px', background: 'var(--bg-subpanel)' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
             <Globe size={18} color="var(--primary-cyan)" />
             <h4 style={{ fontSize: '0.95rem', fontWeight: '700', color: 'var(--text-main)' }}>
@@ -71,14 +93,14 @@ export default function PolicyManager() {
           <input 
             type="text"
             className="font-mono"
-            style={{ width: '100%', padding: '10px', background: '#05070a', border: '1px solid var(--border-color)', color: 'var(--primary-cyan)', borderRadius: '6px', fontSize: '0.85rem' }}
-            value={policies.allowed_geos.join(', ')}
+            style={{ width: '100%', padding: '10px', background: 'var(--input-bg)', border: '1px solid var(--input-border)', color: 'var(--input-text)', borderRadius: '6px', fontSize: '0.85rem' }}
+            value={policies.allowed_geos ? policies.allowed_geos.join(', ') : ''}
             onChange={(e) => setPolicies({ ...policies, allowed_geos: e.target.value.split(',').map(s => s.trim()) })}
           />
         </div>
 
         {/* Payload Limit Rule */}
-        <div className="glass-panel" style={{ padding: '18px', background: 'rgba(15, 23, 42, 0.5)' }}>
+        <div className="glass-panel" style={{ padding: '18px', background: 'var(--bg-subpanel)' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
             <HardDrive size={18} color="var(--accent-purple)" />
             <h4 style={{ fontSize: '0.95rem', fontWeight: '700', color: 'var(--text-main)' }}>
@@ -91,16 +113,16 @@ export default function PolicyManager() {
           <input 
             type="number"
             className="font-mono"
-            style={{ width: '100%', padding: '10px', background: '#05070a', border: '1px solid var(--border-color)', color: 'var(--accent-purple)', borderRadius: '6px', fontSize: '0.85rem' }}
-            value={policies.max_payload_kb}
+            style={{ width: '100%', padding: '10px', background: 'var(--input-bg)', border: '1px solid var(--input-border)', color: 'var(--accent-purple)', borderRadius: '6px', fontSize: '0.85rem' }}
+            value={policies.max_payload_kb || 50}
             onChange={(e) => setPolicies({ ...policies, max_payload_kb: e.target.value })}
           />
         </div>
 
         {/* IP Blacklist Rule */}
-        <div className="glass-panel" style={{ padding: '18px', background: 'rgba(15, 23, 42, 0.5)' }}>
+        <div className="glass-panel" style={{ padding: '18px', background: 'var(--bg-subpanel)' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
-            <Shield size={18} color="#ef4444" />
+            <Shield size={18} color="var(--status-danger)" />
             <h4 style={{ fontSize: '0.95rem', fontWeight: '700', color: 'var(--text-main)' }}>
               Blacklisted IP Fences
             </h4>
@@ -111,13 +133,53 @@ export default function PolicyManager() {
           <input 
             type="text"
             className="font-mono"
-            style={{ width: '100%', padding: '10px', background: '#05070a', border: '1px solid var(--border-color)', color: '#ef4444', borderRadius: '6px', fontSize: '0.85rem' }}
-            value={policies.blocked_ips.join(', ')}
+            style={{ width: '100%', padding: '10px', background: 'var(--input-bg)', border: '1px solid var(--input-border)', color: 'var(--status-danger)', borderRadius: '6px', fontSize: '0.85rem' }}
+            value={policies.blocked_ips ? policies.blocked_ips.join(', ') : ''}
             onChange={(e) => setPolicies({ ...policies, blocked_ips: e.target.value.split(',').map(s => s.trim()) })}
           />
         </div>
 
       </div>
+
+      {/* INTERACTIVE RBAC POLICY MATRIX EDITOR */}
+      <div className="glass-panel" style={{ padding: '20px', background: 'var(--bg-subpanel)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
+          <Users size={20} color="var(--primary-cyan)" />
+          <div>
+            <h4 style={{ fontSize: '1.05rem', fontWeight: '700', color: 'var(--text-main)' }}>
+              👥 Role-Based Access Control (RBAC) Permission Matrix
+            </h4>
+            <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
+              Define authorized microservice target endpoints permitted per caller role. Requests violating RBAC are blocked automatically.
+            </p>
+          </div>
+        </div>
+
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '14px' }}>
+          {policies.rbac_matrix && Object.entries(policies.rbac_matrix).map(([role, targets]) => (
+            <div key={role} className="glass-panel" style={{ padding: '14px', background: 'var(--bg-card)' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                <span style={{ fontWeight: '700', fontSize: '0.88rem', color: 'var(--primary-cyan)' }}>
+                  Role: <code style={{ color: 'var(--text-main)' }}>{role}</code>
+                </span>
+                <span className="badge badge-info" style={{ fontSize: '0.68rem' }}>
+                  {targets.includes('*') ? 'Full Access (*)' : `${targets.length} Target(s)`}
+                </span>
+              </div>
+              
+              <input 
+                type="text"
+                className="font-mono"
+                style={{ width: '100%', padding: '8px 10px', background: 'var(--input-bg)', border: '1px solid var(--input-border)', color: 'var(--text-main)', borderRadius: '6px', fontSize: '0.8rem' }}
+                value={targets.join(', ')}
+                onChange={(e) => handleRbacChange(role, e.target.value)}
+                placeholder="Target services separated by comma"
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+
     </div>
   );
 }

@@ -41,6 +41,7 @@ class PolicyUpdateRequest(BaseModel):
     allowed_geos: Optional[List[str]] = None
     max_payload_kb: Optional[float] = None
     blocked_ips: Optional[List[str]] = None
+    rbac_matrix: Optional[Dict[str, List[str]]] = None
 
 class AttackSimRequest(BaseModel):
     scenario: str
@@ -117,7 +118,8 @@ def update_policies(req: PolicyUpdateRequest):
     policy_engine.update_policy(
         allowed_geos=req.allowed_geos,
         max_payload_kb=req.max_payload_kb,
-        blocked_ips=req.blocked_ips
+        blocked_ips=req.blocked_ips,
+        rbac_matrix=req.rbac_matrix
     )
     return {"status": "Policies updated successfully", "current_policies": get_policies()}
 

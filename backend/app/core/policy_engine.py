@@ -66,12 +66,20 @@ class ZeroTrustPolicyEngine:
 
         return True, "All contextual zero-trust policies passed", eval_details
 
-    def update_policy(self, allowed_geos: List[str] = None, max_payload_kb: float = None, blocked_ips: List[str] = None):
+    def update_policy(
+        self,
+        allowed_geos: List[str] = None,
+        max_payload_kb: float = None,
+        blocked_ips: List[str] = None,
+        rbac_matrix: Dict[str, List[str]] = None
+    ):
         if allowed_geos is not None:
             self.allowed_geos = [g.upper() for g in allowed_geos]
         if max_payload_kb is not None:
             self.max_payload_kb = max_payload_kb
         if blocked_ips is not None:
             self.blocked_ips = blocked_ips
+        if rbac_matrix is not None:
+            self.rbac_matrix = rbac_matrix
 
 policy_engine = ZeroTrustPolicyEngine()

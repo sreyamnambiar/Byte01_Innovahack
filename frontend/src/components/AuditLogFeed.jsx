@@ -1,5 +1,5 @@
 import React from 'react';
-import { Activity, ShieldAlert, ShieldCheck, Clock } from 'lucide-react';
+import { Activity, Clock } from 'lucide-react';
 
 export default function AuditLogFeed({ logs }) {
   const logItems = logs || [];
@@ -37,8 +37,8 @@ export default function AuditLogFeed({ logs }) {
                 className="glass-panel" 
                 style={{ 
                   padding: '12px 16px', 
-                  background: isBlocked ? 'rgba(239, 68, 68, 0.05)' : isChallenged ? 'rgba(245, 158, 11, 0.05)' : 'rgba(15, 23, 42, 0.4)',
-                  borderLeft: isBlocked ? '4px solid #ef4444' : isChallenged ? '4px solid #f59e0b' : '4px solid #10b981'
+                  background: isBlocked ? 'rgba(239, 68, 68, 0.05)' : isChallenged ? 'rgba(245, 158, 11, 0.05)' : 'var(--bg-subpanel)',
+                  borderLeft: isBlocked ? '4px solid #ef4444' : isChallenged ? '4px solid #f59e0b' : '4px solid var(--status-success)'
                 }}
               >
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -59,7 +59,7 @@ export default function AuditLogFeed({ logs }) {
                   </div>
 
                   <div style={{ display: 'flex', alignItems: 'center', gap: '16px', fontSize: '0.85rem' }}>
-                    <span style={{ color: evt.risk_score > 50 ? '#ef4444' : '#34d399', fontWeight: '700' }}>
+                    <span style={{ color: evt.risk_score > 50 ? 'var(--status-danger)' : 'var(--status-success)', fontWeight: '700' }}>
                       Risk: {evt.risk_score}/100
                     </span>
 
@@ -70,7 +70,7 @@ export default function AuditLogFeed({ logs }) {
                 </div>
 
                 {evt.anomalies && evt.anomalies.length > 0 && (
-                  <div style={{ marginTop: '8px', fontSize: '0.78rem', color: '#f87171', background: 'rgba(0,0,0,0.3)', padding: '6px 10px', borderRadius: '4px' }}>
+                  <div style={{ marginTop: '8px', fontSize: '0.78rem', color: 'var(--anomaly-text)', background: 'var(--anomaly-bg)', border: '1px solid rgba(239, 68, 68, 0.2)', padding: '6px 10px', borderRadius: '4px', fontWeight: '600' }}>
                     ⚠️ {evt.anomalies.join(' | ')}
                   </div>
                 )}

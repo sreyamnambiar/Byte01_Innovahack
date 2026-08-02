@@ -71,7 +71,7 @@ DarkTrust constructs a lightweight, dynamic **Service Mesh Proxy Interceptor** t
 ```
 # 🌐 Dynamic Service Mesh
 
->  Secure Service Mesh Communication.
+  Secure Service Mesh Communication.
 
 <img width="1600" height="822" alt="Dynamic Service Mesh" src="https://github.com/user-attachments/assets/a88ba660-f24b-46b0-9f0b-c715d88c83b6" />
 
@@ -124,7 +124,7 @@ The dashboard provides live security insights including detected threats, blocke
 
 Interactive Swagger API documentation and a structured database schema simplify API testing and provide a clear representation of the application's data structure.
 
---
+
 
 ---
 

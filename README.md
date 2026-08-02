@@ -69,6 +69,62 @@ DarkTrust constructs a lightweight, dynamic **Service Mesh Proxy Interceptor** t
 │ (User, Auth, DB API)    │            │ Audit Log Stream │
 └─────────────────────────┘            └──────────────────┘
 ```
+# 🌐 Dynamic Service Mesh
+
+>  Secure Service Mesh Communication.
+
+<img width="1600" height="822" alt="Dynamic Service Mesh" src="https://github.com/user-attachments/assets/a88ba660-f24b-46b0-9f0b-c715d88c83b6" />
+
+
+DarkTrust securely manages communication between distributed services while preventing unauthorized lateral movement across the network.
+
+---
+
+# 🛡️ Zero-Trust Policy Engine
+
+ Context-Aware Policy Evaluation.
+
+<img width="1600" height="832" alt="Contextual Policy Engine" src="https://github.com/user-attachments/assets/a87b140b-1be0-4774-9131-78fa7d4951b4" />
+
+
+Every request is evaluated using contextual security policies including RBAC, payload validation, geolocation, and IP restrictions before access is granted.
+
+---
+
+# ⚡ Attack Simulation Studio
+
+ Attack Simulation & Threat Detection.
+
+<img width="1600" height="821" alt="Attack Simulation Studio" src="https://github.com/user-attachments/assets/d746d67b-f5a9-415b-ae54-5ed7c82aa9dc" />
+
+
+DarkTrust safely simulates real-world attacks such as token replay, payload anomalies, and lateral movement to validate the effectiveness of the implemented security mechanisms.
+
+---
+
+# 📊 Audit Stream & Security Dashboard
+
+ Real-Time Security Monitoring.
+
+<img width="1600" height="737" alt="Audit Log Stream" src="https://github.com/user-attachments/assets/beb93c20-8e7a-4233-93e0-b3d32cd52761" />
+
+
+The dashboard provides live security insights including detected threats, blocked attacks, proxy latency, intercepted traffic, and audit events.
+
+---
+
+# 📚 API Documentation & Database Schema
+
+ Swagger API Documentation and Database Schema.
+
+<img width="1600" height="805" alt="Backend API" src="https://github.com/user-attachments/assets/5f047f85-d6ac-4fac-984e-2567edd17522" />
+<img width="1600" height="541" alt="Schemas" src="https://github.com/user-attachments/assets/64d519c9-0ac4-47c2-9cd6-8480920e7481" />
+
+
+
+Interactive Swagger API documentation and a structured database schema simplify API testing and provide a clear representation of the application's data structure.
+
+--
 
 ---
 
